@@ -27,4 +27,4 @@ jobs:
           app-name: 'cippdesws-usertasks'
           slot-name: 'Production'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_495674E6C36B499D946958A7464E681F }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_AFE3BC330A7A4533A949AD37CE2E8B92 }}
