@@ -167,7 +167,7 @@
     "Cron": "0 */5 * * * *",
     "Priority": 1,
     "RunOnProcessor": true,
-    "PreferredProcessor": "bpa"
+    "PreferredProcessor": "standards"
   },
   {
     "Id": "54c39540-fe91-4795-8613-ac4295751a51",
