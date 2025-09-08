@@ -164,10 +164,9 @@
     "Id": "80070b4f-95ed-4e5f-be4c-9e339306d4aa",
     "Command": "Start-BPAOrchestrator",
     "Description": "Orchestrator to process BPA reports",
-    "Cron": "0 */5 * * * *",
+    "Cron": "0 0 3 * * *",
     "Priority": 1,
-    "RunOnProcessor": true,
-    "PreferredProcessor": "standards"
+    "RunOnProcessor": true
   },
   {
     "Id": "54c39540-fe91-4795-8613-ac4295751a51",
