@@ -25,14 +25,11 @@ function Invoke-ExecGDAPInvite {
             } else {
                 $AutoExtendDuration = 'P180D'
             }
-
-            $SecurityAdminId = '194ae4cb-b126-40b2‐bd5b‐6091b380977d'            
-            $SecurityOperatorId = '5f2222b1‐57c3‐48ba‐8ad5‐d4759f1fde6f'
             
             $RoleIds = $RoleMappings | ForEach-Object { $_.roleDefinitionId }
             $NumberOfRoles = ($RoleIDs -split " ").Count
 
-            $OnlySOC = ($NumberOfRoles -eq 2 -and $RoleMappings.roleDefinitionId -contains $SecurityAdminId -and $RoleMappings.roleDefinitionId -contains $SecurityOperatorId)
+            $OnlySOC = ($NumberOfRoles -eq 2 -and $RoleMappings.RoleName -contains "Security Operator" -and $RoleMappings.RoleName -eq "Security Administrator")
 
             if ($OnlySOC) {
                 $DisplayName = "SOC_$((New-Guid).GUID)"
