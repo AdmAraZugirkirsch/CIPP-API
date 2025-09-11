@@ -28,8 +28,8 @@ function Invoke-ExecGDAPInvite {
 
             $Table = Get-CIPPTable -TableName 'GDAPInvites'
 
-            SecurityAdminId = 'fe930be7-5e62-47db-91af-98c3a49a38b1'
-            $SecurityOperatorId = 'e8611ab8-c189-46e8-94e1-60213ab1f814'
+            SecurityAdminId = '194ae4cb‐b126‐40b2‐bd5b‐6091b380977d '
+            $SecurityOperatorId = '5f2222b1‐57c3‐48ba‐8ad5‐d4759f1fde6f'
             
             $roleIds = $RoleMappings | ForEach-Object { $_.roleDefinitionId }
 
