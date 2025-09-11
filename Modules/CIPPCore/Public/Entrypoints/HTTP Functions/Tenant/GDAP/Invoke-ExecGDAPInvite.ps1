@@ -96,8 +96,8 @@ function Invoke-ExecGDAPInvite {
                         $Message = 'Error creating GDAP relationship request'
                     }
 
-                    Write-LogMessage -headers $Request.Headers -API $APINAME -message "Created GDAP Invite - $InviteUrl" -Sev 'Info'
-                    Write-LogMessage -headers $Request.Headers -API $APINAME -message "Test $RoleMappings" -Sev 'Info'
+                    #Write-LogMessage -headers $Request.Headers -API $APINAME -message "Created GDAP Invite - $InviteUrl" -Sev 'Info'
+                    #Write-LogMessage -headers $Request.Headers -API $APINAME -message "Test $RoleMappings" -Sev 'Info'
                     Write-LogMessage -headers $Request.Headers -API $APINAME -message "Test $roleIds" -Sev 'Info'
                     
                 }
