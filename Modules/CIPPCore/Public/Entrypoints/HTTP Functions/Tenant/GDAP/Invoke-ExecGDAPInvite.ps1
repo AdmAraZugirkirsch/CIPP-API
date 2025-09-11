@@ -26,11 +26,24 @@ function Invoke-ExecGDAPInvite {
                 $AutoExtendDuration = 'P180D'
             }
 
+            SecurityAdminId = '194ae4cb‐b126‐40b2‐bd5b‐6091b380977d '
+            $SecurityOperatorId = '5f2222b1‐57c3‐48ba‐8ad5‐d4759f1fde6f'
+            
+            $roleIds = $RoleMappings | ForEach-Object { $_.roleDefinitionId }
+
+            $onlySOC = ($roleIds.Count -eq 2 -and $roleIds -contains $SecurityAdminId -and $roleIds -contains $SecurityOperatorId)
+
+            if ($onlySOC) {
+                $displayName = "SOC_$((New-Guid).GUID)"
+            } else {
+                $displayName = "CIPP_$((New-Guid).GUID)"
+            }
+            
             $Table = Get-CIPPTable -TableName 'GDAPInvites'
             try {
                 $Step = 'Creating GDAP relationship'
                 $JSONBody = @{
-                    'displayName'        = "CIPP_$((New-Guid).GUID)"
+                    'displayName'        = $displayName
                     'accessDetails'      = @{
                         'unifiedRoles' = @($RoleMappings | Select-Object roleDefinitionId)
                     }
