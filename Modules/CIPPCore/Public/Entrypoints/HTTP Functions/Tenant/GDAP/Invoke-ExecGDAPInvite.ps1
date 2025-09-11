@@ -99,7 +99,7 @@ function Invoke-ExecGDAPInvite {
 
                     #Write-LogMessage -headers $Request.Headers -API $APINAME -message "Created GDAP Invite - $InviteUrl" -Sev 'Info'
                     #Write-LogMessage -headers $Request.Headers -API $APINAME -message "Test $RoleMappings" -Sev 'Info'
-                    Write-LogMessage -headers $Request.Headers -API $APINAME -message "Test $NumberOfRoles" -Sev 'Info'
+                    Write-LogMessage -headers $Request.Headers -API $APINAME -message "Test $DisplayName" -Sev 'Info'
                     
                 }
             } catch {
