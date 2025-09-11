@@ -44,7 +44,7 @@ function Invoke-ExecGDAPInvite {
             try {
                 $Step = 'Creating GDAP relationship'
                 $JSONBody = @{
-                    'displayName'        = "CIPP_$((New-Guid).GUID)"
+                    'displayName'        = $displayName
                     'accessDetails'      = @{
                         'unifiedRoles' = @($RoleMappings | Select-Object roleDefinitionId)
                     }
