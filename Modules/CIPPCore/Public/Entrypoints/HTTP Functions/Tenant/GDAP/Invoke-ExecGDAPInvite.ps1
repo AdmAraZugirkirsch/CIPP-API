@@ -28,10 +28,10 @@ function Invoke-ExecGDAPInvite {
 
             $Table = Get-CIPPTable -TableName 'GDAPInvites'
 
-            SecurityAdminId = '194ae4cb‐b126‐40b2‐bd5b‐6091b380977d '
+          <#  SecurityAdminId = '194ae4cb‐b126‐40b2‐bd5b‐6091b380977d '
             $SecurityOperatorId = '5f2222b1‐57c3‐48ba‐8ad5‐d4759f1fde6f'
             
-          <#  $roleIds = $RoleMappings | ForEach-Object { $_.roleDefinitionId }
+            $roleIds = $RoleMappings | ForEach-Object { $_.roleDefinitionId }
 
             $onlySOC = ($roleIds.Count -eq 2 -and $roleIds -contains $SecurityAdminId -and $roleIds -contains $SecurityOperatorId)
 
