@@ -30,9 +30,9 @@ function Invoke-ExecGDAPInvite {
             $SecurityOperatorId = '5f2222b1‐57c3‐48ba‐8ad5‐d4759f1fde6f'
             
             $RoleIds = $RoleMappings | ForEach-Object { $_.roleDefinitionId }
-            $NumberOfRoles = ($RoleIDs -split " ").Count
+            $RoleIdsArray = $RoleIds -split " "
 
-            $OnlySOC = ($NumberOfRoles -eq 2 -and $RoleIds -contains $SecurityAdminId -and $RoleIds -contains $SecurityOperatorId)
+            $OnlySOC = (RoleIdsArray.Count -eq 2 -and $RoleIdsArray -contains $SecurityAdminId -and $RoleIdsArray -contains $SecurityOperatorId)
 
             if ($OnlySOC) {
                 $DisplayName = "SOC_$((New-Guid).GUID)"
