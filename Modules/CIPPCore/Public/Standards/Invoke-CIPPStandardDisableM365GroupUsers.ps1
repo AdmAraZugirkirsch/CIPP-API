@@ -53,13 +53,13 @@ function Invoke-CIPPStandardDisableM365GroupUsers {
             try {
                 if (!$CurrentState) {
                     # If no current configuration is found, we set it to the default template supplied by MS.
-                    $body = '{"name":"EnableGroupCreation","value":"false"}}'
-                    New-GraphPostRequest -tenantid $tenant -Uri "https://graph.microsoft.com/beta/settings/$($CurrentState.id)" -AsApp $true -Type PATCH -Body $body -ContentType 'application/json'
+                    $CurrentState = '{"id":"","displayName":"Group.Unified","templateId":"62375ab9-6b52-47ed-826b-58e47e0e304b","values":[{"name":"NewUnifiedGroupWritebackDefault","value":"true"},{"name":"EnableMIPLabels","value":"false"},{"name":"CustomBlockedWordsList","value":""},{"name":"EnableMSStandardBlockedWords","value":"false"},{"name":"ClassificationDescriptions","value":""},{"name":"DefaultClassification","value":""},{"name":"PrefixSuffixNamingRequirement","value":""},{"name":"AllowGuestsToBeGroupOwner","value":"false"},{"name":"AllowGuestsToAccessGroups","value":"true"},{"name":"GuestUsageGuidelinesUrl","value":""},{"name":"GroupCreationAllowedGroupId","value":""},{"name":"AllowToAddGuests","value":"true"},{"name":"UsageGuidelinesUrl","value":""},{"name":"ClassificationList","value":""},{"name":"EnableGroupCreation","value":"true"}]}'
+                    New-GraphPostRequest -tenantid $tenant -Uri "https://graph.microsoft.com/beta/settings/$($CurrentState.id)" -AsApp $true -Type POST -Body $CurrentState -ContentType 'application/json'
                     $CurrentState = (New-GraphGetRequest -Uri 'https://graph.microsoft.com/beta/settings' -tenantid $tenant) | Where-Object -Property displayname -EQ 'Group.unified'
                 }
                 ($CurrentState.values | Where-Object { $_.name -eq 'EnableGroupCreation' }).value = 'false'
                 $body = "{values : $($CurrentState.values | ConvertTo-Json -Compress)}"
-                $null = New-GraphPostRequest -tenantid $tenant -asApp $true -Uri "https://graph.microsoft.com/v1.0/settings/$($CurrentState.id)" -Type patch -Body $body -ContentType 'application/json'
+                $null = New-GraphPostRequest -tenantid $tenant -asApp $true -Uri "https://graph.microsoft.com/beta/settings/$($CurrentState.id)" -Type patch -Body $body -ContentType 'application/json'
                 Write-LogMessage -API 'Standards' -tenant $tenant -message 'Disabled users from creating M365 Groups.' -sev Info
             } catch {
                 $ErrorMessage = Get-NormalizedError -Message $_.Exception.Message
@@ -82,9 +82,17 @@ function Invoke-CIPPStandardDisableM365GroupUsers {
         }
     }
     if ($Settings.report -eq $true) {
-        $state = ($CurrentState.values | Where-Object { $_.name -eq 'EnableGroupCreation' }).value -eq 'false' ? $true : ($CurrentState.values | Where-Object { $_.name -eq 'EnableGroupCreation' }
-        Set-CIPPStandardsCompareField -FieldName 'standards.DisableM365GroupUsers' -FieldValue $state -TenantFilter $Tenant
-        Add-CIPPBPAField -FieldName 'DisableM365GroupUsers' -FieldValue $state -StoreAs bool -Tenant $tenant
+        if ($CurrentState) {
+            if (($CurrentState.values | Where-Object { $_.name -eq 'EnableGroupCreation' }).value -eq 'false') {
+                $CurrentState = $true
+            } else {
+                $CurrentState = $false
+            }
+        } else {
+            $CurrentState = $false
+        }
+        Set-CIPPStandardsCompareField -FieldName 'standards.DisableM365GroupUsers' -FieldValue $CurrentState -TenantFilter $Tenant
+        Add-CIPPBPAField -FieldName 'DisableM365GroupUsers' -FieldValue $CurrentState -StoreAs bool -Tenant $tenant
     }
 
 }
