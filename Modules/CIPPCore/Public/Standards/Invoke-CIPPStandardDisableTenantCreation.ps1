@@ -51,7 +51,7 @@ function Invoke-CIPPStandardDisableTenantCreation {
             try {
                 $GraphRequest = @{
                     tenantid = $Tenant
-                    uri      = 'https://graph.microsoft.com/beta/policies/authorizationPolicy'
+                    uri      = 'https://graph.microsoft.com/beta/policies/authorizationPolicy/authorizationPolicy'
                     Type     = 'PATCH'
                     Body     = '{"defaultUserRolePermissions":{"allowedToCreateTenants":false}}'
                 }
