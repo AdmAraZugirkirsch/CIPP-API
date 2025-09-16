@@ -74,7 +74,7 @@ function Invoke-CIPPStandardDisableTenantCreation {
     }
 
     if ($Settings.report -eq $true) {
-        $StateIsCorrect = $CurrentInfo.defaultUserRolePermissions.DisableTenantCreation -eq $false ? $true : ($currentInfo.defaultUserRolePermissions | Select-Object DisableTenantCreation)
+        $StateIsCorrect = $CurrentInfo.defaultUserRolePermissions.allowedToCreateTenants -eq $false ? $true : ($currentInfo.defaultUserRolePermissions | Select-Object allowedToCreateTenants)
         Set-CIPPStandardsCompareField -FieldName 'standards.DisableTenantCreation' -FieldValue $StateIsCorrect -TenantFilter $Tenant
         Add-CIPPBPAField -FieldName 'DisableTenantCreation' -FieldValue $StateIsCorrect -StoreAs bool -Tenant $Tenant
     }
