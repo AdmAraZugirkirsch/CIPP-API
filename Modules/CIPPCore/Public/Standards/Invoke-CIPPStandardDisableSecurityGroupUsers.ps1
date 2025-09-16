@@ -45,7 +45,7 @@ function Invoke-CIPPStandardDisableSecurityGroupUsers {
         } else {
             try {
                 $body = '{"defaultUserRolePermissions":{"allowedToCreateSecurityGroups":false}}'
-                $null = New-GraphPostRequest -tenantid $tenant -Uri 'https://graph.microsoft.com/beta/policies/authorizationPolicy' -Type patch -Body $body -ContentType 'application/json'
+                $null = New-GraphPostRequest -tenantid $tenant -Uri 'https://graph.microsoft.com/beta/policies/authorizationPolicy/authorizationPolicy' -Type patch -Body $body -ContentType 'application/json'
                 Write-LogMessage -API 'Standards' -tenant $tenant -message 'Disabled users from creating Security Groups.' -sev Info
                 $CurrentInfo.defaultUserRolePermissions.allowedToCreateSecurityGroups = $false
             } catch {
