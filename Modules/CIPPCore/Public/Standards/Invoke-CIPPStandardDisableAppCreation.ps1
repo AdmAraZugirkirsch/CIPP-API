@@ -35,7 +35,7 @@ function Invoke-CIPPStandardDisableAppCreation {
 
 
     try {
-        $CurrentInfo = New-GraphGetRequest -Uri 'https://graph.microsoft.com/beta/policies/authorizationPolicy/authorizationPolicy?$select=defaultUserRolePermissions' -tenantid $Tenant
+        $CurrentInfo = New-GraphGetRequest -Uri 'https://graph.microsoft.com/beta/policies/authorizationPolicy?$select=defaultUserRolePermissions' -tenantid $Tenant
     }
     catch {
         $ErrorMessage = Get-NormalizedError -Message $_.Exception.Message
@@ -49,7 +49,7 @@ function Invoke-CIPPStandardDisableAppCreation {
         } else {
             try {
                 $body = '{"defaultUserRolePermissions":{"allowedToCreateApps":false}}'
-                $null = New-GraphPostRequest -tenantid $tenant -Uri 'https://graph.microsoft.com/beta/policies/authorizationPolicy/authorizationPolicy' -Type patch -Body $body -ContentType 'application/json'
+                $null = New-GraphPostRequest -tenantid $tenant -Uri 'https://graph.microsoft.com/beta/policies/authorizationPolicy' -Type patch -Body $body -ContentType 'application/json'
                 Write-LogMessage -API 'Standards' -tenant $tenant -message 'Disabled users from creating App registrations.' -sev Info
                 $CurrentInfo.defaultUserRolePermissions.allowedToCreateApps = $false
             } catch {
