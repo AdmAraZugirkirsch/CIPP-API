@@ -82,15 +82,6 @@ function Invoke-CIPPStandardDisableM365GroupUsers {
         }
     }
     if ($Settings.report -eq $true) {
-        if ($CurrentState) {
-            if (($CurrentState.values | Where-Object { $_.name -eq 'EnableGroupCreation' }).value -eq 'false') {
-                $CurrentState = $true
-            } else {
-                $CurrentState = $false
-            }
-        } else {
-            $CurrentState = $false
-        }
         $state = ($CurrentState.values | Where-Object { $_.name -eq 'EnableGroupCreation' }).value -eq 'false' ? $true : ($CurrentState.values | Where-Object { $_.name -eq 'EnableGroupCreation' }
         Set-CIPPStandardsCompareField -FieldName 'standards.DisableM365GroupUsers' -FieldValue $state -TenantFilter $Tenant
         Add-CIPPBPAField -FieldName 'DisableM365GroupUsers' -FieldValue $state -StoreAs bool -Tenant $tenant
