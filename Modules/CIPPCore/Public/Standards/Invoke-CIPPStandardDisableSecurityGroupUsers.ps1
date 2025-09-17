@@ -67,7 +67,7 @@ function Invoke-CIPPStandardDisableSecurityGroupUsers {
 
     if ($Settings.report -eq $true) {
         $state = $CurrentInfo.defaultUserRolePermissions.allowedToCreateSecurityGroups -eq $false ? $true : ($currentInfo.defaultUserRolePermissions | Select-Object allowedToCreateSecurityGroups)
-        Set-CIPPStandardsCompareField -FieldName 'standards.DisableSecurityGroupUsers' -FieldValue $state -Tenant $tenant
+        Set-CIPPStandardsCompareField -FieldName 'standards.DisableSecurityGroupUsers' -FieldValue $state -TenantFilter $tenant
         Add-CIPPBPAField -FieldName 'DisableSecurityGroupUsers' -FieldValue $CurrentInfo.defaultUserRolePermissions.allowedToCreateSecurityGroups -StoreAs bool -Tenant $tenant
     }
 }
