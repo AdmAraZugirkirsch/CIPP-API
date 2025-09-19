@@ -34,7 +34,7 @@ function Invoke-CIPPStandardDisableTenantCreation {
     ##$Rerun -Type Standard -Tenant $Tenant -Settings $Settings 'DisableTenantCreation'
 
     try {
-        $CurrentState = New-GraphGetRequest -Uri 'https://graph.microsoft.com/beta/policies/authorizationPolicy' -tenantid $Tenant
+        $CurrentState = New-GraphGetRequest -Uri 'https://graph.microsoft.com/beta/policies/authorizationPolicy/authorizationPolicy' -tenantid $Tenant
     }
     catch {
         $ErrorMessage = Get-NormalizedError -Message $_.Exception.Message
