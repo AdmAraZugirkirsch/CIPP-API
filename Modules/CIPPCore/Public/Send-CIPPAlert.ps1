@@ -22,65 +22,37 @@ function Send-CIPPAlert {
         Write-Information 'Trying to send email'
         try {
             if ($Config.email -like '*@*' -or $altEmail -like '*@*') {
-                
-                # 🛠 Build recipient array properly
-                if ($altEmail) {
-                    $Recipients = @(
-                        [pscustomobject]@{
-                            EmailAddress = @{ Address = $altEmail }
-                        }
-                    )
+                $Recipients = if ($AltEmail) {
+                    [pscustomobject]@{EmailAddress = @{Address = $AltEmail } }
                 } else {
-                    $Recipients = $Config.email -split '[,;]' | ForEach-Object {
-                        $_ = $_.Trim()
-                        if ($_ -like '*@*') {
-                            [pscustomobject]@{
-                                EmailAddress = @{ Address = $_ }
-                            }
-                        }
-                    }
+                    $Config.email.split($(if ($Config.email -like '*,*') { ',' } else { ';' })).trim() | ForEach-Object { if ($_ -like '*@*') { [pscustomobject]@{EmailAddress = @{Address = $_ } } } }
                 }
-    
-                # 🧱 Build the full request body for Graph API
-                $PowerShellBody = [pscustomobject]@{
-                    message = @{
-                        subject = $Title
-                        body = @{
+                $PowerShellBody = [PSCustomObject]@{
+                    message         = @{
+                        subject      = $Title
+                        body         = @{
                             contentType = 'HTML'
-                            content     = $HTMLContent
+                            content     = $HTMLcontent
                         }
-                        toRecipients = $Recipients
+                        toRecipients = @($Recipients)
                     }
-                    saveToSentItems = $true
+                    saveToSentItems = 'true'
                 }
-    
-                # 🔄 Convert to JSON for sending
+
                 $JSONBody = ConvertTo-Json -Compress -Depth 10 -InputObject $PowerShellBody
-    
-                # 📧 Extract recipient addresses for logging
-                $RecipientEmails = $Recipients | ForEach-Object { $_.EmailAddress.Address }
-    
-                if ($PSCmdlet.ShouldProcess(($RecipientEmails -join ', '), 'Sending email')) {
-                    # 🚀 Send email using your Graph wrapper
-                    $null = New-GraphPostRequest -uri 'https://graph.microsoft.com/v1.0/me/sendMail' `
-                                                 -tenantid $env:TenantID -NoAuthCheck $true `
-                                                 -type POST -body $JSONBody
+                if ($PSCmdlet.ShouldProcess($($Recipients.EmailAddress.Address -join ', '), 'Sending email')) {
+                    $null = New-GraphPostRequest -uri 'https://graph.microsoft.com/v1.0/me/sendMail' -tenantid $env:TenantID -NoAuthCheck $true -type POST -body ($JSONBody)
                 }
-    
-                # ✅ Log success
-                Write-LogMessage -API $APIName -message "Sent an email alert: $Title" -tenant $TenantFilter -sev info
-                return "Sent an email alert: $Title"
             }
+            Write-LogMessage -API 'Webhook Alerts' -message "Sent an email alert: $Title" -tenant $TenantFilter -sev info
+            return "Sent an email alert: $Title"
         } catch {
-            # ❌ Log any errors with context
             $ErrorMessage = Get-CippException -Exception $_
             Write-Information "Could not send webhook alert to email: $($ErrorMessage.NormalizedError)"
-            Write-LogMessage -API $APIName -message "Could not send webhook alerts to email. $($ErrorMessage.NormalizedError)" `
-                             -tenant $TenantFilter -sev Error -LogData $ErrorMessage
+            Write-LogMessage -API 'Webhook Alerts' -message "Could not send webhook alerts to email. $($ErrorMessage.NormalizedError)" -tenant $TenantFilter -sev Error -LogData $ErrorMessage
             return "Could not send webhook alert to email: $($ErrorMessage.NormalizedError)"
         }
     }
-
 
     if ($Type -eq 'table' -and $TableName) {
         Write-Information 'Trying to send to Table'
