@@ -35,7 +35,7 @@ function Invoke-CIPPStandardDisableAppCreation {
 
 
     try {
-        $CurrentInfo = New-GraphGetRequest -Uri 'https://graph.microsoft.com/beta/policies/authorizationPolicy?$select=defaultUserRolePermissions' -tenantid $Tenant
+        $CurrentInfo = New-GraphGetRequest -Uri 'https://graph.microsoft.com/beta/policies/authorizationPolicy/authorizationPolicy?$select=defaultUserRolePermissions' -tenantid $Tenant
     }
     catch {
         $ErrorMessage = Get-NormalizedError -Message $_.Exception.Message
