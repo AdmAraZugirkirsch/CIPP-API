@@ -22,34 +22,44 @@ function Send-CIPPAlert {
         Write-Information 'Trying to send email'
         try {
             if ($Config.email -like '*@*' -or $altEmail -like '*@*') {
-                $Recipients = if ($AltEmail) {
-                    [pscustomobject]@{EmailAddress = @{Address = $AltEmail } }
+                # Build Recipients array
+                $Recipients = if ($altEmail) {
+                    @([pscustomobject]@{ EmailAddress = @{ Address = $altEmail } })
                 } else {
-                    $Config.email.split($(if ($Config.email -like '*,*') { ',' } else { ';' })).trim() | ForEach-Object { if ($_ -like '*@*') { [pscustomobject]@{EmailAddress = @{Address = $_ } } } }
+                    $Config.email -split '[,;]' | ForEach-Object {
+                        if ($_ -like '*@*') {
+                            [pscustomobject]@{ EmailAddress = @{ Address = $_.Trim() } }
+                        }
+                    }
                 }
                 $PowerShellBody = [PSCustomObject]@{
-                    message         = @{
-                        subject      = $Title
-                        body         = @{
+                    message = @{
+                        subject = $Title
+                        body = @{
                             contentType = 'HTML'
-                            content     = $HTMLcontent
+                            content     = $HTMLContent
                         }
-                        toRecipients = @($Recipients)
+                        toRecipients = $Recipients
                     }
-                    saveToSentItems = 'true'
+                    saveToSentItems = $true
                 }
-
+    
                 $JSONBody = ConvertTo-Json -Compress -Depth 10 -InputObject $PowerShellBody
-                if ($PSCmdlet.ShouldProcess($($Recipients.EmailAddress.Address -join ', '), 'Sending email')) {
-                    $null = New-GraphPostRequest -uri 'https://graph.microsoft.com/v1.0/me/sendMail' -tenantid $env:TenantID -NoAuthCheck $true -type POST -body ($JSONBody)
+                $RecipientEmails = $Recipients | ForEach-Object { $_.EmailAddress.Address }
+    
+                if ($PSCmdlet.ShouldProcess($RecipientEmails -join ', ', 'Sending email')) {
+                    $null = New-GraphPostRequest -uri 'https://graph.microsoft.com/v1.0/me/sendMail' `
+                                                 -tenantid $env:TenantID -NoAuthCheck $true `
+                                                 -type POST -body $JSONBody
                 }
+                Write-LogMessage -API $APIName -message "Sent an email alert: $Title" -tenant $TenantFilter -sev info
+                return "Sent an email alert: $Title"
             }
-            Write-LogMessage -API 'Webhook Alerts' -message "Sent an email alert: $Title" -tenant $TenantFilter -sev info
-            return "Sent an email alert: $Title"
         } catch {
             $ErrorMessage = Get-CippException -Exception $_
             Write-Information "Could not send webhook alert to email: $($ErrorMessage.NormalizedError)"
-            Write-LogMessage -API 'Webhook Alerts' -message "Could not send webhook alerts to email. $($ErrorMessage.NormalizedError)" -tenant $TenantFilter -sev Error -LogData $ErrorMessage
+            Write-LogMessage -API $APIName -message "Could not send webhook alerts to email. $($ErrorMessage.NormalizedError)" `
+                             -tenant $TenantFilter -sev Error -LogData $ErrorMessage
             return "Could not send webhook alert to email: $($ErrorMessage.NormalizedError)"
         }
     }
