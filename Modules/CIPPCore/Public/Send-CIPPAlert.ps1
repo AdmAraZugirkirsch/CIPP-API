@@ -48,7 +48,7 @@ function Send-CIPPAlert {
             return "Sent an email alert: $Title"
         } catch {
             $ErrorMessage = Get-CippException -Exception $_
-            Write-Information -MessageData ( $Recipients | ForEach-Object { $_.EmailAddress.Address } )
+            Write-Information "Could not send webhook alert to email: $($ErrorMessage.NormalizedError)"
             Write-LogMessage -API 'Webhook Alerts' -message "Could not send webhook alerts to email. $($Recipients)" -tenant $TenantFilter -sev Error -LogData $ErrorMessage
             return "Could not send webhook alert to email: $($ErrorMessage.NormalizedError)"
         }
