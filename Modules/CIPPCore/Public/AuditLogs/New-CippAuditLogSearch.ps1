@@ -37,9 +37,9 @@ function New-CippAuditLogSearch {
         [string]$DisplayName = 'CIPP Audit Search - ' + (Get-Date).ToString('yyyy-MM-dd HH:mm:ss'),
         [Parameter(Mandatory = $true)]
         [string]$TenantFilter,
-        [Parameter(Mandatory = $true)]
+        [Parameter()]
         [datetime]$StartTime,
-        [Parameter(Mandatory = $true)]
+        [Parameter()]
         [datetime]$EndTime,
         [Parameter()]
         [ValidateSet(
